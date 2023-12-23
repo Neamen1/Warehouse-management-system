@@ -7,7 +7,7 @@ from sqlalchemy import case
 main = Blueprint('main', __name__)
 
 
-@main.route("/")
+
 @main.route("/products")
 @login_required
 def products():

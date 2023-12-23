@@ -8,7 +8,6 @@ from flask_login import UserMixin
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     username = db.Column(db.String(20), unique=True, nullable=False)
@@ -26,7 +25,6 @@ class User(db.Model, UserMixin):
         return s.dumps({'user_id': self.id}).decode('utf-8')
 
     def has_roles(self, role):
-        print([role.name for role in self.roles])
         if isinstance(role, str):
             return role in (role.name for role in self.roles)
         else:
@@ -48,7 +46,6 @@ class User(db.Model, UserMixin):
 class Roles(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(50), unique=True)
-    user_roles = db.relationship('UserRoles', cascade='all, delete-orphan', uselist=False)
 
 # Define the UserRoles association table
 class UserRoles(db.Model):

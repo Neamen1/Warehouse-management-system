@@ -2,8 +2,8 @@ import os
 
 
 class Config:
-    # SECRET_KEY = os.environ.get('SECRET_KEY')
-    # SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
+    SECRET_KEY = os.environ.get('SECRET_KEY')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
     COUCHDB_SERVER = os.environ.get('COUCHDB_SERVER')
     COUCHDB_DATABASE = os.environ.get('COUCHDB_DATABASE')
     MAIL_SERVER = 'smtp.googlemail.com'
@@ -11,7 +11,10 @@ class Config:
     MAIL_USE_TLS = True
     MAIL_USERNAME = os.environ.get('EMAIL_USER')
     MAIL_PASSWORD = os.environ.get('EMAIL_PASS')
-    FLASK_APP="flaskblog.py"
-    FLASK_ENV="development"
-    SQLALCHEMY_DATABASE_URI="sqlite:///storage.db"
-    SECRET_KEY="5791628bb0b13ce0c676dfde280ba245"
+
+    # FLASK_APP="flaskblog.py"
+    # FLASK_ENV="development"
+    # SQLALCHEMY_DATABASE_URI="sqlite:///storage.db"
+    # SECRET_KEY="5791628bb0b13ce0c676dfde280ba245"
+    # COUCHDB_SERVER="http://couchdb:couchdb@localhost:5984/"
+    # COUCHDB_DATABASE="logs"

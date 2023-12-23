@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>Cart</h1>
+    {% for product in products.items %}
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="product-metadata">  
+              <a class="mr-2" href="{{ url_for('products.category_products', category=product.category) }}">{{ product.category }}</a>
+              <small class="text-muted">Quantity: <u>{{ cart[(product.id|string)] }}</u></small>
+              <small class="flt-r">Price: {{product.price}} per {{product.unitOfMeasure}}</small> 
+            </div>
+            <h2><a class="product-title" href="{{ url_for('products.product', product_id=product.id) }}">{{ product.name }}</a></h2>
+            <p class="product-content">{{ product.description }}</p>
+            <div class="product-metadata">  
+                <small class="flt-r">Items price: {{product.price * cart[(product.id|string)]}}</small> 
+            </div>
+          </div>
+        </article>
+    {% endfor %}
+    <h2>Total price: {{ total_price }}</h2>
+    {% for page_num in products.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+      {% if page_num %}
+        {% if products.page == page_num %}
+          <a class="btn btn-info mb-4" href="{{ url_for('products.cart', page=page_num) }}">{{ page_num }}</a>
+        {% else %}
+          <a class="btn btn-outline-info mb-4" href="{{ url_for('products.cart', page=page_num) }}">{{ page_num }}</a>
+        {% endif %}
+      {% else %}
+        ...
+      {% endif %}
+    {% endfor %}
+{% endblock content %}

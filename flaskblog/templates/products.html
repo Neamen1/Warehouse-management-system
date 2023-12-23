@@ -10,6 +10,14 @@
             </div>
             <h2><a class="product-title" href="{{ url_for('products.product', product_id=product.id) }}">{{ product.name }}</a></h2>
             <p class="product-content">{{ product.description }}</p>
+            <div class="product-metadata">  
+              <small class="flt-r" {% if product.quantityInStock==0 %}style="color: red;"{% endif %}>        
+                {% if product.quantityInStock==0 %}
+                  OUT OF STOCK
+                {% else %}
+                  <a class="mr-2" href="{{ url_for('products.add_to_cart', product_id=product.id, page=products.page, quantityInStock=product.quantityInStock) }}">Add to cart</a>
+                {% endif %}</small> 
+            </div>
           </div>
         </article>
     {% endfor %}

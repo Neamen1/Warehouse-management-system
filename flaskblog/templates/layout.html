@@ -36,6 +36,7 @@
                 {% if current_user.has_roles('admin') %}
                   <a class="nav-item nav-link" href="{{ url_for('products.new_product') }}">New Product</a>
                 {% endif %}
+                <a class="nav-item nav-link" href="{{ url_for('products.cart') }}">Cart</a>
                 <a class="nav-item nav-link" href="{{ url_for('users.account') }}">Account</a>
                 <a class="nav-item nav-link" href="{{ url_for('users.logout') }}">Logout</a>
               {% else %}
