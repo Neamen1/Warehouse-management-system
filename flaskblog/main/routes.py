@@ -1,4 +1,6 @@
 from flask import render_template, request, Blueprint
+from flask_login import login_required
+
 from flaskblog.models import Product
 from sqlalchemy import case
 
@@ -7,6 +9,7 @@ main = Blueprint('main', __name__)
 
 @main.route("/")
 @main.route("/products")
+@login_required
 def products():
     page = request.args.get('page', 1, type=int)
     products = Product.query.order_by(Product.name.asc()).paginate(page=page, per_page=5)
@@ -14,6 +17,7 @@ def products():
 
 
 @main.route("/about")
+@login_required
 def about():
     return render_template('about.html', title='About')
 

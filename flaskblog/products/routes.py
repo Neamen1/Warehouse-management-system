@@ -2,9 +2,9 @@ from flask import (render_template, url_for, flash,
                    redirect, request, abort, Blueprint)
 from flask_login import current_user, login_required
 from flaskblog import db
+from flaskblog.logs.logging import log_to_couchdb
 from flaskblog.models import Product
 from flaskblog.products.forms import ProductForm
-from sqlalchemy import case
 
 products = Blueprint('products', __name__)
 
@@ -25,12 +25,15 @@ def new_product():
             description=form.description.data)
         db.session.add(product)
         db.session.commit()
+        log_to_couchdb(f"User with id:{current_user.id} created product:{product.id} {product.name}!")
         flash('Your product has been created!', 'success')
         return redirect(url_for('main.products'))
     return render_template('create_product.html', title='New Product',
                            form=form, legend='New Product')
 
+
 @products.route("/products/<string:category>")
+@login_required
 def category_products(category):
     page = request.args.get('page', 1, type=int)
     #user = User.query.filter_by(username=username).first_or_404()
@@ -42,6 +45,7 @@ def category_products(category):
 
 
 @products.route("/product/<int:product_id>")
+@login_required
 def product(product_id):
     product = Product.query.get_or_404(product_id)
     return render_template('product.html', product=product)
@@ -63,6 +67,7 @@ def update_product(product_id):
         product.description=form.description.data
 
         db.session.commit()
+        log_to_couchdb(f"User with id:{current_user.id} updated product:{product.id} {product.name}!")
         flash('Your product has been updated!', 'success')
         return redirect(url_for('products.product', product_id=product.id))
     elif request.method == 'GET':
@@ -81,9 +86,10 @@ def update_product(product_id):
 @login_required
 def delete_product(product_id):
     product = Product.query.get_or_404(product_id)
-    if current_user.has_roles('admin'):
+    if not current_user.has_roles('admin'):
         abort(403)
     db.session.delete(product)
     db.session.commit()
+    log_to_couchdb(f"User with id:{current_user.id} deleted product:{product.id} {product.name}!")
     flash('Your post has been deleted!', 'success')
     return redirect(url_for('main.products'))

@@ -1,3 +1,4 @@
+import couchdb
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
@@ -6,6 +7,10 @@ from flask_mail import Mail
 from flaskblog.config import Config
 
 db = SQLAlchemy()
+
+couch = couchdb.Server(Config.COUCHDB_SERVER)
+logger_db = couch[Config.COUCHDB_DATABASE]
+
 bcrypt = Bcrypt()
 login_manager = LoginManager()
 login_manager.login_view = 'users.login'
