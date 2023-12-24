@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block content %}
+    {% for order, products in zip(orders.items, products_list) %}
+        <article class="media content-section">
+          <div class="media-body">
+            <div class="order-metadata">
+              <p class="no-line-break">Order id: {{ order.id }}; </p>
+              <p class="no-line-break flt-r">Total price: {{ order.totalAmount }}</p>
+            </div>
+            <h2>Order content</h2>
+            {% for product in products %}
+                <li>{{ product.name }} - Quantity: {{ cart_dict[product.id|string] }}</li>
+            {% endfor %}
+            <div class="order-metadata-bottom" style="padding-top: 20px">
+              <p class="no-line-break">Order date: {{ order.orderDate }}</p>
+                 <p class="no-line-break flt-r">Status: {{ order.orderStatus }}</p>
+            </div>
+           <form method="post" action="{{ url_for('main.change_order_status', order_id=order.id) }}">
+
+    <button type="submit" class="btn btn-secondary btn-sm mt-1 mb-1 flt-r">Change</button>
+</form>
+          </div>
+        </article>
+    {% endfor %}
+    {% for page_num in orders.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+      {% if page_num %}
+        {% if orders.page == page_num %}
+          <a class="btn btn-info mb-4" href="{{ url_for('main.all_orders', page=page_num) }}">{{ page_num }}</a>
+        {% else %}
+          <a class="btn btn-outline-info mb-4" href="{{ url_for('main.all_orders', page=page_num) }}">{{ page_num }}</a>
+        {% endif %}
+      {% else %}
+        ...
+      {% endif %}
+    {% endfor %}
+{% endblock content %}

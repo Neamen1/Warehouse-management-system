@@ -30,6 +30,11 @@
                 <a class="nav-item nav-link" href="{{ url_for('main.products') }}">Products</a>
                 <a class="nav-item nav-link" href="{{ url_for('main.cart') }}">Cart</a>
                 <a class="nav-item nav-link" href="{{ url_for('main.orders') }}">My orders</a>
+                  {% if current_user.is_authenticated %}
+                    {% if current_user.has_roles('admin') %}
+                  <a class="nav-item nav-link" href="{{ url_for('main.all_orders') }}">All orders</a>
+                    {% endif %}
+                {% endif %}
                    {% if current_user.is_authenticated %}
                     {% if current_user.has_roles('admin') %}
                   <a class="nav-item nav-link" href="{{ url_for('logs.get_logs') }}">Logs</a>
@@ -69,25 +74,26 @@
           {% block content %}{% endblock %}
         </div>
       {% if current_user.is_authenticated %}
-        <div class="col-md-4">
-          <div class="content-section">
+    <div class="col-md-4">
+        <div class="content-section">
             <h3>Your notifications</h3>
-              <ul class="list-group">
-                 <ul class="list-group">
-                    {% for notification in current_user.notifications %}
-                        <li class="list-group-item">
-                    {{ notification.message }} - {{ notification.timestamp }}
-                        </li>
-                    {% endfor %}
-                 {% if not current_user.notifications %}
-                <li class="list-group-item">No notifications</li>
-                 {% endif %}
-                </ul>
-              </ul>
-            </p>
-          </div>
+            <ul class="list-group">
+                {% for notification in current_user.notifications %}
+                    <li class="list-group-item">
+                        {{ notification.message }} - {{ notification.timestamp }}
+                        <form method="post" action="{{ url_for('main.delete_notification', notification_id=notification.id) }}" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-danger float-right">-</button>
+                        </form>
+                    </li>
+                {% endfor %}
+                {% if not current_user.notifications %}
+                    <li class="list-group-item">No notifications</li>
+                {% endif %}
+            </ul>
         </div>
-      {% endif %}
+    </div>
+{% endif %}
+
       </div>
     </main>
 
