@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block content %}
+    {% for entry in log_entries %}
+        <article class="media content-section">
+          <div class="media-body">
+            <h2><a class="logs-date">{{ entry.date }}</a></h2>
+            {% if entry.logs %}
+                <ul>
+                    {% for log in entry.logs %}
+                        <li>
+                            <span class="timestamp">{{ log.timestamp }}</span>:
+                            <span class="message">{{ log.message }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No logs for this date.</p>
+            {% endif %}
+          </div>
+        </article>
+    {% endfor %}
+{% endblock content %}
+
