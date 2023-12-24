@@ -34,11 +34,13 @@ def create_app(config_class=Config):
     from flaskblog.main.routes import main
     from flaskblog.errors.handlers import errors
     from flaskblog.logs.routes import logs
+    from flaskblog.notifications.routes import notifications
     app.register_blueprint(users)
     app.register_blueprint(products)
     app.register_blueprint(orders)
     app.register_blueprint(main)
     app.register_blueprint(errors)
     app.register_blueprint(logs)
+    app.register_blueprint(notifications)
 
     return app

@@ -20,6 +20,7 @@ class User(db.Model, UserMixin):
     # Define the relationship to Role via UserRoles
     roles = db.relationship('Roles', secondary='UserRoles', backref=db.backref('users', lazy='dynamic'))
     orders = db.relationship('Orders', backref='user', lazy=True)
+    notifications = db.relationship('Notification', backref='user', lazy=True)
 
     def get_reset_token(self, expires_sec=1800):
         s = Serializer(current_app.config['SECRET_KEY'], expires_sec)
@@ -105,4 +106,11 @@ class Orders(db.Model):
 
     def __repr__(self):
         return f"Order(id={self.id}, userId={self.userId}, orderStatus={self.orderStatus}, orderDate={self.orderDate})"
+
+
+class Notification(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    userId = db.Column(db.Integer, db.ForeignKey('user.id'))
+    message = db.Column(db.Text, nullable=False)
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
