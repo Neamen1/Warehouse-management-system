@@ -15,7 +15,7 @@
                 {% if product.quantityInStock==0 %}
                   OUT OF STOCK
                 {% else %}
-                  <a class="mr-2" href="{{ url_for('products.add_to_cart', product_id=product.id, page=products.page, quantityInStock=product.quantityInStock) }}">Add to cart</a>
+                  <a class="btn btn-secondary btn-sm mt-1 mb-1 flt-r" href="{{ url_for('products.add_to_cart', product_id=product.id, page=products.page, quantityInStock=product.quantityInStock) }}">Add to cart</a>
                 {% endif %}</small> 
             </div>
           </div>

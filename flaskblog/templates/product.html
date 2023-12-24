@@ -6,7 +6,7 @@
         <a class="mr-2" href="{{ url_for('products.category_products', category=product.category) }}">{{ product.category }}</a>
         <small class="text-muted">Stock: <u>{{ product.quantityInStock }}</u></small>
         <small class="flt-r" {% if product.quantityInStock==0 %}style="color: red;"{% endif %}>{% if product.quantityInStock==0 %}OUT OF STOCK{% else %} Price: {{product.price}} per {{product.unitOfMeasure}}{% endif %}</small> 
-          {% if current_user.is_authenticated and current_user.has_roles('admin')%}
+          {% if current_user.is_authenticated and current_user.has_roles('admin') %}
             <div>
               <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('products.update_product', product_id=product.id) }}">Update</a>
               <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Delete</button>

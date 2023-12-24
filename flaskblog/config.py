@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 
 
 class Config:
@@ -11,6 +12,7 @@ class Config:
     MAIL_USE_TLS = True
     MAIL_USERNAME = os.environ.get('EMAIL_USER')
     MAIL_PASSWORD = os.environ.get('EMAIL_PASS')
+    PERMANENT_SESSION_LIFETIME = timedelta(minutes=30)  # Set the session timeout to 30 minutes
 
     # FLASK_APP="flaskblog.py"
     # FLASK_ENV="development"

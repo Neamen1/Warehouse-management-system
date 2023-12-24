@@ -99,12 +99,10 @@ def add_to_cart(product_id):
     page = request.args.get('page', 1, type=int)
     quantityInStock = request.args.get('quantityInStock', 0, type=int)
 
-    session.get('cart', {})
-  
-    cart = session['cart']
+    cart = session.get('cart', {})
 
     if product_id in cart:
-        if quantityInStock < session['cart'][product_id]:
+        if quantityInStock < session['cart'][product_id]+1:
             flash('You chose more items than in stock. Please choose another quantity', 'danger')
             return redirect(url_for('main.products', page=page))
         else:
@@ -113,44 +111,36 @@ def add_to_cart(product_id):
         cart[product_id] = 1
 
     session['cart'] = cart
-    print(cart)
     return redirect(url_for('main.products', page=page))
 
-@login_required
-@products.route('/cart')
-def cart():
-    page = request.args.get('page', 1, type=int)
-    cart = session.get('cart', {})
-    products = Product.query.filter(Product.id.in_(list(cart.keys())))    # get products list from database which were added to cart 
-    total_price = calculate_total_price(cart, products)
-    products = products.paginate(page=page, per_page=5)
-    return render_template('cart.html', products=products, cart=cart, total_price=total_price)
 
-def calculate_total_price(cart, products):
-    total_price = 0.0
-    for product in products:
-        quantity = cart[str(product.id)]
-        total_price += product.price * quantity
-    return total_price
+
 
 @login_required
-@products.route('/cart/<int:product_id>/update')
+@products.route('/cart/<string:product_id>/update')
 def update_cart_item(product_id):
     page = request.args.get('page', 1, type=int)
     quantityInStock = request.args.get('quantityInStock', 0, type=int)
-    new_quantity = request.args.get('new_quantity', 1, type=int)
-    cart = session.get('cart', {})
+    add_quantity = request.args.get('add_quantity', 1, type=int) #+1 or -1
+    cart = session.get('cart')
 
-    if quantityInStock < new_quantity:
-        flash('You chose more items than in stock. Please choose another quantity', 'danger')
-        return redirect(url_for('/cart', page=page))
-    
-    if new_quantity < 0:
+    if quantityInStock < cart[product_id]+add_quantity or cart[product_id]+add_quantity < 1:
         flash('Wrong quantity. Please choose another quantity', 'danger')
-        return redirect(url_for('/cart', page=page))
-
-    cart[product_id] = new_quantity
+        return redirect(url_for('main.cart', page=page))
+    
+    cart[product_id] += add_quantity
 
     session['cart'] = cart
+    return redirect(url_for('main.cart', cart=cart, page=page))
 
-    return redirect(url_for('/cart', page=page))
+@login_required
+@products.route('/cart/<string:product_id>/remove')
+def remove_cart_item(product_id):
+    page = request.args.get('page', 1, type=int)
+    cart = session.get('cart')
+
+    cart.pop(product_id)
+
+    session['cart'] = cart
+    return redirect(url_for('main.cart', cart=cart, page=page))
+

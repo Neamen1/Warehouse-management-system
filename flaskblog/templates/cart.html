@@ -2,28 +2,41 @@
 {% block content %}
     <h1>Cart</h1>
     {% for product in products.items %}
-        <article class="media content-section">
+        <article class="media content-section {% if product.quantityInStock==0 %}gray-bg{% endif %}">
           <div class="media-body">
             <div class="product-metadata">  
               <a class="mr-2" href="{{ url_for('products.category_products', category=product.category) }}">{{ product.category }}</a>
-              <small class="text-muted">Quantity: <u>{{ cart[(product.id|string)] }}</u></small>
-              <small class="flt-r">Price: {{product.price}} per {{product.unitOfMeasure}}</small> 
+              <p class="no-line-break">Stock amount: <u>{{ product.quantityInStock }}</u></p>
+              <small class="flt-r" {% if product.quantityInStock==0 %}style="color: red;"{% endif %}>{% if product.quantityInStock==0 %}OUT OF STOCK{% else %} Price: {{product.price}} per {{product.unitOfMeasure}}{% endif %}</small> 
             </div>
             <h2><a class="product-title" href="{{ url_for('products.product', product_id=product.id) }}">{{ product.name }}</a></h2>
             <p class="product-content">{{ product.description }}</p>
-            <div class="product-metadata">  
-                <small class="flt-r">Items price: {{product.price * cart[(product.id|string)]}}</small> 
+            <div class="product-metadata-bottom">  
+              <a href="{{ url_for('products.update_cart_item', product_id=product.id, add_quantity=-1, page=products.page, quantityInStock=product.quantityInStock) }}">-1</a>   
+              <p class="no-line-break">Quantity: <u>{{ cart[(product.id|string)] }}</u></p>
+              <a href="{{ url_for('products.update_cart_item', product_id=product.id, add_quantity=1, page=products.page, quantityInStock=product.quantityInStock) }}">+1</a>  
+              
+              <p class="no-line-break flt-r">Items price: {{ (product.price * cart[(product.id|string)])|round(2) }}</p> 
+            </div>
+            <div style="padding-bottom: 1px; margin-bottom: 4px;">
+              <a class="btn btn-danger btn-sm flt-r" href="{{ url_for('products.remove_cart_item', product_id=product.id, page=products.page) }}" >
+                Remove from cart 
+              </a>
             </div>
           </div>
         </article>
     {% endfor %}
-    <h2>Total price: {{ total_price }}</h2>
+    <div style="padding-bottom: 1px; margin-bottom: 4px;">
+      <h2>Total price: {{ total_price }}</h2>
+    </ul>
+      <a class="btn btn-success btn-lg mt-1 mb-1" href="{{ url_for('orders.add_order', page=products.page) }}">Order</a>
+    </div>
     {% for page_num in products.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
       {% if page_num %}
         {% if products.page == page_num %}
-          <a class="btn btn-info mb-4" href="{{ url_for('products.cart', page=page_num) }}">{{ page_num }}</a>
+          <a class="btn btn-info mb-4" href="{{ url_for('main.cart', page=page_num) }}">{{ page_num }}</a>
         {% else %}
-          <a class="btn btn-outline-info mb-4" href="{{ url_for('products.cart', page=page_num) }}">{{ page_num }}</a>
+          <a class="btn btn-outline-info mb-4" href="{{ url_for('main.cart', page=page_num) }}">{{ page_num }}</a>
         {% endif %}
       {% else %}
         ...
