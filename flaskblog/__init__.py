@@ -30,7 +30,7 @@ def create_app(config_class=Config):
     login_manager.init_app(app)
     mail.init_app(app)
     sess.init_app(app)
-    
+
     from flaskblog.users.routes import users
     from flaskblog.products.routes import products
     from flaskblog.orders.routes import orders

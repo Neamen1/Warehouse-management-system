@@ -9,14 +9,7 @@ import json
 
 orders = Blueprint('orders', __name__)
 
-# @products.route("/product/<int:product_id>")
-# @login_required
-# def product(product_id):
-#     product = Product.query.get_or_404(product_id)
-#     return render_template('product.html', product=product)
 
-
-# create an order after cart "Order" button pressed
 @login_required
 @orders.route('/add_order')
 def add_order():
@@ -28,7 +21,7 @@ def add_order():
     if total_price == -1:
         return redirect(url_for('main.cart', page=page))
 
-    if(total_price < 0.009):
+    if (total_price < 0.009):
         flash('Cant order, wrong total price', 'danger')
         return redirect(url_for('main.cart', page=page))
 
@@ -38,15 +31,18 @@ def add_order():
         orderedProducts=cart_json,
         totalAmount=total_price,
         orderStatus='Pending',  # Default status before manager changes it
-        warehouseId=1           # TODO: check available products on warehouses closest to user location, and create multiple orders for each warehouse respectively to available products  
+        warehouseId=1
+        # TODO: check available products on warehouses closest to user location, and create multiple orders for each warehouse respectively to available products
     )
     db.session.add(new_order)
     db.session.commit()
-    log_to_couchdb(f"User with id:{current_user.id} created order:{new_order.id} with items {new_order.orderedProducts} with total price {new_order.totalAmount}!")
+    log_to_couchdb(
+        f"User with id:{current_user.id} created order:{new_order.id} with items {new_order.orderedProducts} with total price {new_order.totalAmount}!")
     flash('Your order has been created!', 'success')
-    
-    session['cart'] = {}    #clear session cart
-    return redirect(url_for('main.orders'))   #redirect to user orders page
+
+    session['cart'] = {}  # clear session cart
+    return redirect(url_for('main.orders'))  # redirect to user orders page
+
 
 def calculate_total_price_and_update_db(cart, products):
     total_price = 0.0
@@ -56,17 +52,19 @@ def calculate_total_price_and_update_db(cart, products):
         total_price += product.price * quantity
         new_quantity = product.quantityInStock - quantity
         product.quantityInStock -= quantity
-        db.session.add(product)     # add change to db
+        db.session.add(product)  # add change to db
 
-        if(new_quantity < 0):
+        if (new_quantity < 0):
             is_enough_products = False
-            flash(f"Sorry, seems like we dont have enough amount of \'{product.name}\' to sutisfy your order. Please change your cart", 'danger')
-    
+            flash(
+                f"Sorry, seems like we dont have enough amount of \'{product.name}\' to sutisfy your order. Please change your cart",
+                'danger')
+
     db.session.flush()  # save changes (but not write) to db
 
-    if is_enough_products:            
-        db.session.commit()     # write changes to db
+    if is_enough_products:
+        db.session.commit()  # write changes to db
         return total_price
     else:
-        db.session.rollback()   # discard changes
-        return -1 
+        db.session.rollback()  # discard changes
+        return -1

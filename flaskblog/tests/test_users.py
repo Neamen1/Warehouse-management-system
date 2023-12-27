@@ -26,5 +26,5 @@ def test_login_logout(client):
 
     # Logout
     response = client.get('/logout', follow_redirects=True)
-    assert response.status_code == 302
+    assert response.status_code == 200
 
