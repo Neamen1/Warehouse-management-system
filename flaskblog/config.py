@@ -1,6 +1,6 @@
 import os
 from datetime import timedelta
-
+import redis
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY')
@@ -12,6 +12,9 @@ class Config:
     MAIL_USE_TLS = True
     MAIL_USERNAME = os.environ.get('EMAIL_USER')
     MAIL_PASSWORD = os.environ.get('EMAIL_PASS')
+    # Flask-Session
+    SESSION_TYPE = os.environ.get('SESSION_TYPE')
+    SESSION_REDIS = redis.from_url(os.environ.get('SESSION_REDIS'))
     PERMANENT_SESSION_LIFETIME = timedelta(minutes=30)  # Set the session timeout to 30 minutes
 
     # FLASK_APP="flaskblog.py"
