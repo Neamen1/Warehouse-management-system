@@ -54,6 +54,7 @@ set SESSION_TYPE=redis
 set SESSION_REDIS=redis://localhost:6379/
 flask run
 ```
+or launch **quickstart-windows.bat**.
 
 2. Access the Application:
 Open your web browser and go to http://localhost:5000.
@@ -71,7 +72,7 @@ set SESSION_TYPE=redis
 set SESSION_REDIS=redis://localhost:6379/
 pytest
 ```
-or launch **quickstart-windows-testing.bat**
+or launch **quickstart-windows-testing.bat**.
 
 ## Usage
 - Admin Panel: Manage inventory, orders, and users.
